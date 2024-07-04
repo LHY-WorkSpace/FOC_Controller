@@ -1,0 +1,78 @@
+U8G2库使用
+1.指令
+u8g2_ClearDisplay(); // 清除显示数据及屏幕
+u8g2_ClearBuffer(); // 清Buffer缓冲区的数据
+u8g2_SendBuffer(); // 将Buffer帧缓冲区的内容发送到显示器,发送刷新消息
+u8g2_SendF(“c”, 0x0a7); // 向显示控制器发送特殊命令5 u8g2_SetPowerSave(0) // 开关省电模式
+
+2.设置
+u8g2_enableUTF8Print(); //设置启用UTF-8支持
+u8g2_DisableUTF8Print(); //设置停用UTF-8支持
+u8g2_SetContrast(); //设置显示屏亮度/对比度(0-255)
+u8g2_SetBusClock(); //设置连接速度(IIC:200000-400000/SPI:1000000-8000000),在begin()之前调用
+
+2.1设置字体:
+u8g2_SetFontMode(0); //定义字体背景模式,仅u8g2_xxx_tX字体支持,默认0,禁用透明
+u8g2_SetFontDirection(0); //旋转当前显示 参数:0123
+u8g2_SetFont(u8g2_font_Unifont_t_Chinese1); //设置字体
+u8g2_SetFontPosCenter(); //设置字体基线Center/Baseline/Bottom/Top
+
+2.2设置颜色:
+u8g2_SetDrawColor(1); //设置颜色,0透显,1实显,2XOR (drawCircle,drawDisc,drawEllipse和drawFilledEllipse不支持XOR模式)
+
+2.3设置光标位置:
+u8g2_Home(); //设置光标回初始位置
+u8g2_SetCursor(x, y); //设置打印功能的光标位置
+u8g2_SetBitmapMode(0); //设置是否开启位图函数背景色
+
+3.简单绘制
+u8g2_DrawStr(x, y, “文本”); // 绘制文本字符,不能绘制编码大于或等于256,绘制文本前需定义字体.y轴向上绘制
+u8g2_DrawUTF8(x, y,“字符”); // 绘制一个编码为UTF-8的字符串.注意1.编译器支持2.代码编辑器支持
+u8g2_DrawGlyph(x, y, HEX); // 绘制特殊文本图标(需联合特殊字体)常与u8g2_SetFont()一起使用
+u8g2_print(); // 打印文本字符(需要联合光标位置setCursor,setFont)支持变量和F()
+
+4.0.绘制点
+u8g2_DrawPixel(x, y); // 在xy位置绘制一个像素.
+
+4.1.绘制线条
+u8g2_DrawHLine(x, y, w); // 绘制水平线 w长度
+u8g2_DrawVLine(x, y, h); // 绘制垂直线 h高度
+u8g2_DrawLine(x1, y1, x2, y2); // 画自由线 x1y1点1 x2y2点2
+
+4.2.绘制矩形
+u8g2_DrawBox(x, y, w, h); // 画填充矩形w,h,宽度,高度
+u8g2_DrawFrame(x, y, w, h); // 画空心矩形w,h,宽度,高度
+
+4.2.1.绘制圆角矩形
+u8g2_DrawRFrame(x,y,w,h,r); //要求w >= 2*(r+1);h >= 2*(r+1);否则未定义2*(r+1)
+
+4.3. 绘制圆形
+4.3.1.画正/椭圆
+u8g2_DrawCircle(圆心x, 圆心y, 半径rad, 部分位置U8G2_DRAW_ALL); // 画空心圆 rad半径 直径为 2rad+1
+u8g2_DrawEllipse(圆心x, 圆心y, 椭圆长度x, 椭圆宽度y, 部分位置U8G2_DRAW_ALL) //画空心椭圆 长度和宽度均为整个圆的1/2
+U8G2_DRAW_ALL /替换参数:
+U8G2_DRAW_ALL 全部
+U8G2_DRAW_UPPER_RIGHT 上右
+U8G2_DRAW_UPPER_LEFT 上左
+U8G2_DRAW_LOWER_RIGHT 下右
+U8G2_DRAW_LOWER_LEFT 下左/
+
+4.4.绘制多边形
+u8g2_DrawTriangle(x1,y1,x2,y2,x3,y3); //三个点的坐标,实心
+
+4.5.绘制位图图像
+u8g2_DrawXBM( x, y, w, h, bits); //bits是位图资源表,setBitmapMode(1)切换为旧模式
+
+5.绘制处理
+5.1.指定区域绘制
+u8g2_SetClipWindow(x1, y1, x2, y2); //从1到2形成可视矩形,矩形内部可视,外部遮盖
+u8g2_UpdateDisplay(); //刷新全部显示区域
+u8g2_UpdateDisplayArea(x, y, w, h); //刷新指定区域显示 推荐sendBuffer
+
+6.按键功能处理
+u8g2_UserInterfaceInputValue(“标题”,“提示文本”,值,最低值,最高值,值的位数,“文本”) //按键消息菜单
+u8g2_UserInterfaceMessage(“Title1”, “Title2”, “Title3”, " Ok \n Cancel "); //按键确认菜单
+u8g2_UserInterfaceSelectionList(“Title”, 默认选择项, “Select1\Select2\Select3”); //按键选择菜单
+
+7.高级API操作
+u8g2_getBufferSize //返回页面缓冲区的大小,等于8u8g2.getBufferTileHeightu8g2.getBufferTileWidthu8g2.setBufferPtr(buf); //指向内部页面缓冲区开始位的指针
