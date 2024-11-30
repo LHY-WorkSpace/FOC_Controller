@@ -1,17 +1,14 @@
 #include "DataType.h"
 #include "WS2812.h"
 #include "stm32f10x.h"
-
+#include "Timer.h"
 
 // 多的1个为复位帧
 static u16 DispBuff[24*(WS2812_NUM+1)];
 
 const u16 Code0 = 24;
 const u16 Code1 = 66;
-
 static u8 ComplateFlag = 1;
-
-static u16 TotalData = 0;
 
 
 // PA2  TIM2_CH3
@@ -140,33 +137,6 @@ void  WS2812_SetAll(u8 Red, u8 Green, u8 Blue)
 
 
 
-// void AsciiCodeSend(char *Data)
-// {
-// 	u16 i,k;
-// 	char *Pbuf = Data;
-// 	TotalData = strlen(Data);
-// 	for (i = 0; i < TotalData; i++)
-// 	{
-// 		for (k = 0; k < 8; k++)
-// 		{
-// 			if( ((*Data)&(0x80>>k)) )
-// 			{
-// 				DispBuff[i*8+k] = Code1;
-// 			}
-// 			else
-// 			{
-// 				DispBuff[i*8+k] = Code0;
-// 			}
-// 		}
-// 		Pbuf++;
-// 	}
-// }
-
-
-
-
-
-
 
 void RGB_SendToLED()
 {
@@ -188,83 +158,6 @@ void DMA1_Channel2_IRQHandler()
 	TIM_Cmd(TIM2,DISABLE);//定时器必须在这里关
 	DMA_Cmd(DMA1_Channel2,DISABLE);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	NVIC_InitTypeDef  NVIC_Initstr;
-
-
-	// NVIC_Initstr.NVIC_IRQChannel=USART1_IRQn;
-	// NVIC_Initstr.NVIC_IRQChannelPreemptionPriority=4;
-	// NVIC_Initstr.NVIC_IRQChannelSubPriority=0;
-	// NVIC_Initstr.NVIC_IRQChannelCmd=ENABLE;
-	// NVIC_Init(&NVIC_Initstr);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -22,7 +22,7 @@ void TIM3_Init(u16 arr, u16 psc)
 
 	// 定时器TIM3初始化
 	TIM_TimeBaseStructure.TIM_Period = arr *1000 - 1;// N ms
-	TIM_TimeBaseStructure.TIM_Prescaler = psc - 1;
+	TIM_TimeBaseStructure.TIM_Prescaler = 72 - 1;
 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
@@ -125,46 +125,6 @@ void TIM3_IRQHandler(void) // TIM3中断
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 
-		// AsciiCodeTimerTick();
-		MorseCodeTimerTick();
-		button_ticks();
 
-		if (Count >= MAX_VAL)
-		{
-			Count = 0;
-		}
-		Time_SetFlag(Flag_10ms);
-
-		if (Count % 2 == 0)
-		{
-			Time_SetFlag(Flag_20ms);
-		}
-
-		if (Count % 3 == 0)
-		{
-			Time_SetFlag(Flag_30ms);
-		}
-
-		if (Count % 5 == 0)
-		{
-			Time_SetFlag(Flag_50ms);
-		}
-
-		if (Count % 10 == 0)
-		{
-			Time_SetFlag(Flag_100ms);
-		}
-
-		if (Count % 20 == 0)
-		{
-			Time_SetFlag(Flag_200ms);
-		}
-
-		if (Count % 50 == 0)
-		{
-			Time_SetFlag(Flag_500ms);
-		}
-		
-		Count++;
 	}
 }

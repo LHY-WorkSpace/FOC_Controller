@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
+#include "Timer.h"
+
 
 // SCL - PB11
 // SDA - PB10
@@ -14,7 +16,7 @@ static void EC_IIC_Delay(u16 nus)
 
 	for(k=0; k<nus; k++)
 	{
-		for(i=0; i<1; i++)
+		for(i=0; i<2; i++)
 		{
 			__NOP();
 		}
@@ -162,6 +164,14 @@ void AS5600_Init(void)
 	GPIO_Initstructure.GPIO_Speed = GPIO_Speed_10MHz;
 	GPIO_Initstructure.GPIO_Mode = GPIO_Mode_Out_OD;
 	GPIO_Init(GPIOB,&GPIO_Initstructure);
+	Delay_ms(50);
+
+	// 考虑后期是否加滤波
+	// B16_B08 Config;
+	// u8 Cmd = 0x04;
+	// AS5600_WriteData(CONF_H_REG,1,&Cmd);
+	// AS5600_ReadData(CONF_H_REG,2,&Config.B08[0]);
+	// printf("Config:%x,%x\n",Config.B08[0],Config.B08[1]);
 }
 
 //************************// 
@@ -252,15 +262,15 @@ float AS5600_Angle(uint8_t Mode)
 	B16_B08 AngleReg;
 
 	memset(AngleReg.B08,0,sizeof(B16_B08));
-	AS5600_ReadData(RAW_ANGLE_L_REG,1,&AngleReg.B08[0]);
-	AS5600_ReadData(RAW_ANGLE_H_REG,1,&AngleReg.B08[1]);
+	AS5600_ReadData(RAW_ANGLE_H_REG,2,&AngleReg.B08[0]);
+	AngleReg.B16 = (AngleReg.B08[0]<<8)|AngleReg.B08[1];
 	AS5600Angle = (float)AngleReg.B16*360.0f/4096.0f;
 
 	Err = AS5600Angle - PrvAngle;
 
 	if(fabs(Err) > 360.0*0.8)
 	{
-		TurnsNum += (Err > 0.0) ? -1:1;
+		TurnsNum += (Err > 0.0f) ? -1.0f:1.0f;
 	}
 
 	PrvAngle = AS5600Angle;
@@ -275,6 +285,7 @@ float AS5600_Angle(uint8_t Mode)
 			break;
 		case ANGLE_TURN_MODE:
 			Result = AS5600Angle + TurnsNum*360.0;
+			// printf("FOC:%.2f,%.2f\n",AS5600Angle,Result);
 			break;
 		default:
 			break;
@@ -289,7 +300,7 @@ float AS5600_Angle(uint8_t Mode)
 void AS5600_Test()
 {
 	B16_B08 Angle;
-	u16 AngleTmp=0;
+	// u16 AngleTmp=0;
 	
 	memset(Angle.B08,0,sizeof(B16_B08));
 	AS5600_ReadData(RAW_ANGLE_L_REG,1,&Angle.B08[0]);

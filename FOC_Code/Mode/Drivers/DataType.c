@@ -185,11 +185,7 @@ float FastCos(float x)
 	// Return the output value
 	return (cosVal);
 }
-#else if(CALCULATE_MODE == MODE_2)
-
-#define _PI_2 (1.57079632679f)
-#define _2PI (6.28318530718f)
-
+#elif(CALCULATE_MODE == MODE_2)
 const u16 sine_array[65] = 
 {
 	0,804,1608,2411,3212,4011,4808,5602,6393,7180,7962,8740,9512,

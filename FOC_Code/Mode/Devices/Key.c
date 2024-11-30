@@ -395,7 +395,7 @@ KeyInfo_t GetKeyState()
 	else
 	{
 		KeyInfo.KeyNum = i;
-		KeyInfo.KeyState = KeyState[i];
+		KeyInfo.KeyState = (PressEvent)KeyState[i];
 	}
 
 	memset(&KeyState,0xff,sizeof(KeyState));

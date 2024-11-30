@@ -15,9 +15,6 @@ void USART1_Init(u32 bode)
 {
 	GPIO_InitTypeDef USART_GPIO_Init;
 	USART_InitTypeDef USART1_Initstruc;
-	NVIC_InitTypeDef  NVIC_Initstr;
-
-
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
@@ -43,6 +40,7 @@ void USART1_Init(u32 bode)
 	USART1_Initstruc.USART_HardwareFlowControl=USART_HardwareFlowControl_None;
 	USART_Init(USART1,&USART1_Initstruc);
 
+	// NVIC_InitTypeDef  NVIC_Initstr;
 	// NVIC_Initstr.NVIC_IRQChannel=USART1_IRQn;
 	// NVIC_Initstr.NVIC_IRQChannelPreemptionPriority=4;
 	// NVIC_Initstr.NVIC_IRQChannelSubPriority=0;
