@@ -24,7 +24,14 @@ void USART1_Init(u32 bode)
     /* USART configure */
     usart_deinit(USART0);
     usart_baudrate_set(USART0, bode);
+	usart_parity_config(USART0, USART_PM_NONE);
+	usart_word_length_set(USART0, USART_WL_8BIT);
+	usart_stop_bit_set(USART0, USART_STB_1BIT);
+
     usart_transmit_config(USART0, USART_TRANSMIT_ENABLE);
+
+	nvic_irq_enable(USART0_IRQn, 0, 0);
+	
     usart_enable(USART0);
 }
 

@@ -21,6 +21,15 @@ void PWM_Init()
     timer_oc_parameter_struct timer_ocintpara;
     timer_parameter_struct timer_initpara;
 
+    rcu_periph_clock_enable(RCU_GPIOA);
+    rcu_periph_clock_enable(RCU_AF);
+
+    /*Configure PA0 PA1 PA2(TIMER1 CH0 CH1 CH2) as alternate function*/
+    gpio_init(GPIOA,GPIO_MODE_AF_PP,GPIO_OSPEED_50MHZ,GPIO_PIN_0);
+    gpio_init(GPIOA,GPIO_MODE_AF_PP,GPIO_OSPEED_50MHZ,GPIO_PIN_1);
+    gpio_init(GPIOA,GPIO_MODE_AF_PP,GPIO_OSPEED_50MHZ,GPIO_PIN_2);
+
+
     rcu_periph_clock_enable(RCU_TIMER1);
 
     timer_deinit(FOC_TIMER);
@@ -37,10 +46,10 @@ void PWM_Init()
     }
 
     /* FOC_TIMER configuration */
-    timer_initpara.prescaler         = CLK_DIV;
+    timer_initpara.prescaler         = CLK_DIV - 1;
     timer_initpara.alignedmode       = TIMER_COUNTER_EDGE;
     timer_initpara.counterdirection  = TIMER_COUNTER_UP;
-    timer_initpara.period            = TIM_PeriodVal;
+    timer_initpara.period            = TIM_PeriodVal - 1;
     timer_initpara.clockdivision     = TIMER_CKDIV_DIV1;
     timer_initpara.repetitioncounter = 0;
     timer_init(FOC_TIMER,&timer_initpara);
@@ -58,17 +67,17 @@ void PWM_Init()
     timer_channel_output_config(FOC_TIMER,TIMER_CH_2,&timer_ocintpara);
 
     /* CH0 configuration in PWM mode0,duty cycle 25% */
-    timer_channel_output_pulse_value_config(FOC_TIMER,TIMER_CH_0,3999);
+    timer_channel_output_pulse_value_config(FOC_TIMER,TIMER_CH_0,0);
     timer_channel_output_mode_config(FOC_TIMER,TIMER_CH_0,TIMER_OC_MODE_PWM0);
     timer_channel_output_shadow_config(FOC_TIMER,TIMER_CH_0,TIMER_OC_SHADOW_DISABLE);
 
     /* CH1 configuration in PWM mode0,duty cycle 50% */
-    timer_channel_output_pulse_value_config(FOC_TIMER,TIMER_CH_1,7999);
+    timer_channel_output_pulse_value_config(FOC_TIMER,TIMER_CH_1,0);
     timer_channel_output_mode_config(FOC_TIMER,TIMER_CH_1,TIMER_OC_MODE_PWM0);
     timer_channel_output_shadow_config(FOC_TIMER,TIMER_CH_1,TIMER_OC_SHADOW_DISABLE);
 
     /* CH2 configuration in PWM mode0,duty cycle 75% */
-    timer_channel_output_pulse_value_config(FOC_TIMER,TIMER_CH_2,11999);
+    timer_channel_output_pulse_value_config(FOC_TIMER,TIMER_CH_2,0);
     timer_channel_output_mode_config(FOC_TIMER,TIMER_CH_2,TIMER_OC_MODE_PWM0);
     timer_channel_output_shadow_config(FOC_TIMER,TIMER_CH_2,TIMER_OC_SHADOW_DISABLE);
 

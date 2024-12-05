@@ -38,14 +38,9 @@ OF SUCH DAMAGE.
 #include "gd32f30x_it.h"
 #include "main.h"
 #include "systick.h"
+#include "CAN.h"
 
-
-
-void nvic_config(void)
-{
-    nvic_priority_group_set(NVIC_PRIGROUP_PRE2_SUB2);
-    nvic_irq_enable(USART0_IRQn, 0, 0);
-}
+extern can_receive_message_struct receive_message;
 
 /*!
     \brief      this function handles NMI exception
@@ -148,4 +143,19 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
     delay_decrement();
+}
+
+void CAN0_RX1_IRQHandler(void)
+{
+    if( can_interrupt_flag_get(CANX, CAN_INT_FLAG_RFL1) == SET )
+    {
+        /* check the receive message */
+        can_message_receive(CANX, CAN_FIFO1, &receive_message);
+        // if((0xaabb == receive_message.rx_efid)&&(CAN_FF_EXTENDED == receive_message.rx_ff) && (8 == receive_message.rx_dlen))
+        // {
+        //     receive_flag = SET;
+        // }
+        can_interrupt_flag_clear(CANX ,CAN_INT_FLAG_RFL1);
+    }
+
 }

@@ -9,8 +9,8 @@
 
 int main(void)
 {
+    nvic_priority_group_set(NVIC_PRIGROUP_PRE2_SUB2);
     systick_config();
-    nvic_config();
     LED_Init();
     // // EEPROM_Init();
     Delay_ms(100);

@@ -59,5 +59,4 @@ void DebugMon_Handler(void);
 void PendSV_Handler(void);
 /* this function handles SysTick exception */
 void SysTick_Handler(void);
-void nvic_config(void);
 #endif /* GD32F30X_IT_H */
